@@ -16,7 +16,9 @@ class Elem:
 
     @override
     def __eq__(self, other : object) -> bool:
-        return isinstance(other, Elem) and self.sym == other.sym and self.exp == other.exp
+        if not isinstance(other, Elem):
+            return NotImplemented
+        return self.sym == other.sym and self.exp == other.exp
 
     @override
     def __repr__(self) -> str:
@@ -28,6 +30,18 @@ class Elem:
             elif self.exp > -10:
                 return "{}⁻{}".format(self.sym, format_map[-self.exp])
         return "{}^{}".format(self.sym, self.exp)
+
+    @override
+    def __hash__(self) -> int:
+        return hash((self.sym, self.exp))
+
+    # def __mul__(self, other : object) -> Word:
+    #     if isinstance(other, Word):
+    #         return Word((self,)) * other
+    #     if isinstance(other, Elem):
+    #         return Word((self,)) * Word((other,))
+    #     else:
+    #         return NotImplemented
 
 def elem(raw: str) -> Elem:
     splits = raw.split("^") 

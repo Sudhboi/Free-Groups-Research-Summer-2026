@@ -1,7 +1,7 @@
 from objects.Word import *
 
-wordA : Word = Word([Elem("a", 2), Elem("b", 0), Elem("a", -1)])
-wordB : Word = Word([Elem("a", 1)])
+wordA : Word = Word(tuple([Elem("a", 2), Elem("b", 0), Elem("a", -1)]))
+wordB : Word = Word(tuple([Elem("a", 1)]))
 wordC : Word = word("a^2 b b^2 a^-1")
 
 print(wordA)
@@ -18,3 +18,9 @@ print(wordC.reduced().inv())
 k = wordC.reduced()
 print(k.concat(k.inv()).reduced())
 print(word("a").reduced())
+
+word1 =word("a b a^-1")
+word2= word("a b^2")
+print(word1)
+print(word2)
+print(word1 * word2)
