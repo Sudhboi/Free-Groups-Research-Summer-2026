@@ -9,51 +9,30 @@ class Word:
         self.word = word
 
     def reduced(self) -> Word:
-        reducedWord : Word = Word(self.word[:])
-        newWord : Word = Word([])
-
-        if reducedWord.word != []:
-            reduced : bool = True
-            reducedInPrevCycle : bool = False
-            while reduced:
-                reduced = False
-                for index in range(len(reducedWord.word) - 1):
-
-                    if reducedInPrevCycle:
-                        reducedInPrevCycle = False
-                        continue
-
-                    currentSym : Symbol = reducedWord.word[index].sym
-
-                    if currentSym == reducedWord.word[index + 1].sym:
-                        newWord.word.append(Elem(
-                            symbol = currentSym, 
-                            exponent = reducedWord.word[index].exp + reducedWord.word[index + 1].exp
-                        ))
-                        reduced = True
-                        reducedInPrevCycle = True
-                    elif reducedWord.word[index].exp == 0:
-                        reduced = True
-                    else:
-                        newWord.word.append(reducedWord.word[index])
-
-                if not reducedInPrevCycle:
-                    lastElem : Elem = reducedWord.word[::-1][0]
-                    if lastElem.exp != 0:
-                        newWord.word.append(lastElem)
-                
-                reducedWord = newWord if newWord.word != [] else reducedWord
-                newWord = Word([])
-
-        if len(reducedWord.word) == 1 and reducedWord.word[0].exp == 0:
-            return Word([])
+        reducedWord : Word = Word([])
+        for currElem in self.word:
+            if len(reducedWord.word) == 0:
+                reducedWord.word.append(currElem)
+            elif currElem.exp != 0:
+                prevElem = reducedWord.word[-1]
+                if prevElem.sym == currElem.sym:
+                    _ = reducedWord.word.pop()
+                    toAdd = Elem(currElem.sym, prevElem.exp + currElem.exp)
+                    if toAdd.exp != 0:
+                        reducedWord.word.append(toAdd)
+                else:
+                    reducedWord.word.append(currElem)
         return reducedWord
 
-    def __mul__(self, other: Word) -> Word:
+    def concat(self, other: Word):
         addedWord : Word = Word([])
         addedWord.word.extend(self.word)
         addedWord.word.extend(other.word)
-        return addedWord.reduced()
+        return addedWord
+
+    def __mul__(self, other: Word) -> Word:
+        return self.concat(other).reduced()
+
 
     def inv(self) -> Word:
         return Word([Elem(element.sym, -1 * element.exp) for element in self.word[::-1]])
@@ -64,6 +43,7 @@ class Word:
 
     def strictEquality(self, other : Word) -> bool:
         if (len(self.word) != len(other.word)):
+            print("different length")
             return False
         else:
             for i in range(len(self.word)):
