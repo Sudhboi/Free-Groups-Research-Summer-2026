@@ -1,8 +1,8 @@
 from typing import override
 
-format_map = {0: "⁰", 1:"¹", 2: "²", 3: "³"}
+format_map = {"-": "⁻", "0": "⁰", "1":"¹", "2": "²", "3": "³"}
 for i in range(4, 10):
-    format_map[i] = chr(0x2070 + i)
+    format_map[str(i)] = chr(0x2070 + i)
 
 use_unicode : bool = True
 
@@ -25,23 +25,13 @@ class Elem:
         if use_unicode:
             if self.exp == 1:
                 return self.sym
-            elif self.exp >= 0 and self.exp < 10:
-                return "{}{}".format(self.sym, format_map[self.exp])
-            elif self.exp > -10:
-                return "{}⁻{}".format(self.sym, format_map[-self.exp])
+            else:
+                return self.sym + "".join([format_map[i] for i in str(self.exp)])
         return "{}^{}".format(self.sym, self.exp)
 
     @override
     def __hash__(self) -> int:
         return hash((self.sym, self.exp))
-
-    # def __mul__(self, other : object) -> Word:
-    #     if isinstance(other, Word):
-    #         return Word((self,)) * other
-    #     if isinstance(other, Elem):
-    #         return Word((self,)) * Word((other,))
-    #     else:
-    #         return NotImplemented
 
 def elem(raw: str) -> Elem:
     splits = raw.split("^") 
