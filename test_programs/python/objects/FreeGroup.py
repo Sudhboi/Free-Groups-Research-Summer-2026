@@ -23,6 +23,7 @@ class FreeGroup:
             for alph in self.alphabet:
                 for word in word_list:
                     next_words.append(word * Word((alph,)))
+            print(next_words)
             word_list.extend(next_words)
         return word_list
 

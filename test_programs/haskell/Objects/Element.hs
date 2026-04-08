@@ -14,6 +14,9 @@ type Exponent = Int
 
 data Elem = Elem {sym :: Symbol, expo :: Exponent} deriving (Eq)
 
+instance Ord Elem where
+    (Elem asym aexpo) `compare` (Elem bsym bexpo) = (asym `compare` bsym) <> (aexpo `compare` bexpo)
+
 instance Show Elem where
     show = pretty
 

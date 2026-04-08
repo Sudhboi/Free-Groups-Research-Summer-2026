@@ -3,7 +3,8 @@ module GroupWord (
     reduceWord,
     readWord,
     (+:+),
-    inv
+    inv,
+    elemWord
 )
 where
 
@@ -14,8 +15,8 @@ type GroupWord = [Elem]
 
 reduceWord :: GroupWord -> GroupWord
 reduceWord = reverse . (foldl reducer [])
-reducer :: GroupWord -> Elem -> GroupWord
 
+reducer :: GroupWord -> Elem -> GroupWord
 reducer list (Elem _ 0) = list
 reducer [] ele = ele : []
 reducer list@((Elem csym cexp) : xs) ele@(Elem asym aexp)
@@ -32,3 +33,5 @@ inv :: GroupWord -> GroupWord
 inv = foldl invert []
     where invert list (Elem csym cexp) = Elem csym (-cexp) : list
 
+elemWord :: Elem -> GroupWord
+elemWord elem = [elem]
