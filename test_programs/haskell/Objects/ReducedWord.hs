@@ -10,7 +10,7 @@ import Data.Group
 import GroupWord
 import Element
 
-data RWord = RWord GroupWord deriving (Eq)
+data RWord = RWord { groupWord :: GroupWord } deriving (Eq)
 
 instance Show RWord where
     show (RWord word) = "r" ++ (show word)

@@ -1,3 +1,6 @@
-from .Element import Elem, elem
-from .Word import Word, word
+from .Element import *
+from .Word import *
 from .FreeGroup import *
+from .Morphism import *
+from .WhiteheadAutomorphism import *
+from .Cache import *

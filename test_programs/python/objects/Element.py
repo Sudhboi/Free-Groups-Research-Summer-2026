@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import override
 
 format_map = {"-": "⁻", "0": "⁰", "1":"¹", "2": "²", "3": "³"}
@@ -32,6 +33,9 @@ class Elem:
     @override
     def __hash__(self) -> int:
         return hash((self.sym, self.exp))
+
+    def inv(self) -> Elem:
+        return Elem(self.sym, -self.exp)
 
 def elem(raw: str) -> Elem:
     splits = raw.split("^") 

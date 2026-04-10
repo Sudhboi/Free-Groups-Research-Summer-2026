@@ -1,6 +1,7 @@
 from __future__ import annotations
+from collections.abc import Iterable
 from typing import override
-from .Element import Elem, elem
+from .Element import Elem, Exponent, elem
 
 class MutableWord:
     word : list[Elem]
@@ -42,6 +43,10 @@ class Word:
         addedWord.word.extend(other.word)
         return addedWord.immutable()
 
+    def __iter__(self) -> Iterable[Elem]:
+        for i in self.word:
+            yield i
+
     def __mul__(self, other: object) -> Word:
         if isinstance(other, Word):
             return self.concat(other).reduced()
@@ -58,11 +63,25 @@ class Word:
         else:
             return NotImplemented
 
+    def __pow__(self, exp: Exponent) -> Word:
+        if exp < 0:
+            return (self ** -exp).inv()
+        elif exp == 0:
+            return Word(())
+        else:
+            newWord : MutableWord = MutableWord([])
+            for _ in range(exp):
+                newWord.word.extend(self.word)
+            return newWord.immutable()
+
+
     def inv(self) -> Word:
         return MutableWord([Elem(element.sym, -1 * element.exp) for element in self.word[::-1]]).immutable()
     
     @override
     def __repr__(self) -> str:
+        if self.length == 0:
+            return "ε"
         return "".join([str(elem) for elem in self.word])
 
     def strictEquality(self, other : Word) -> bool:

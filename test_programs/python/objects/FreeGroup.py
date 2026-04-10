@@ -27,3 +27,9 @@ class FreeGroup:
             word_list.extend(next_words)
         return word_list
 
+def getFreeGroup(rank : int) -> FreeGroup:
+    basisList: list[str] = []
+    for i in range(97, 97 + rank):
+        basisList.append(chr(i))
+    return FreeGroup(tuple(basisList))
+
