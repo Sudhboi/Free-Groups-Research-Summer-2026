@@ -1,5 +1,6 @@
 from .Word import *
 from .Element import *
+import random
 
 class FreeGroup:
 
@@ -32,4 +33,20 @@ def getFreeGroup(rank : int) -> FreeGroup:
     for i in range(97, 97 + rank):
         basisList.append(chr(i))
     return FreeGroup(tuple(basisList))
+
+def genRandWord(group : FreeGroup, length : int, variation : int) -> tuple[Word, int]:
+    newWord = MutableWord([])
+    prevSym: Symbol = ""
+    count = 0
+    while count <= length:
+        sym: Symbol = group.basis[random.randint(0, group.rank - 1)]
+        if sym == prevSym:
+            continue
+        prevSym = sym
+        expo = 0 
+        while expo == 0:
+            expo = random.randint(-variation, variation)
+        newWord.word.append(Elem(sym, expo))
+        count += abs(expo)
+    return (newWord.immutable(), count)
 

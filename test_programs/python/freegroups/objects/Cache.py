@@ -3,7 +3,7 @@ import pickle
 import time
 
 def getWhiteheadFromCache(rank : int) -> list[Morphism]:
-    readFile = open("../whiteheadcache/rank{}".format(rank), "rb+")
+    readFile = open("./objects/whiteheadcache/rank{}".format(rank), "rb+")
     group = getFreeGroup(rank)
     cTime = time.time()
     mapList: list[dict[Symbol, Word]] = pickle.load(readFile)
@@ -18,7 +18,7 @@ def getWhiteheadFromCache(rank : int) -> list[Morphism]:
 def writeWhiteheadCache(rank : int) -> None:
     cTime = time.time()
     whiteHeadList = generateType2WAMaps(getFreeGroup(rank))
-    print("Wrote Cache for rank {} in:".format(rank), time.time() - cTime)
-    toFile = open("../whiteheadcache/rank{}".format(rank), "wb+")
+    toFile = open("./objects/whiteheadcache/rank{}".format(rank), "wb")
     pickle.dump(whiteHeadList, toFile)
     toFile.close()
+    print("Wrote Cache for rank {} in:".format(rank), time.time() - cTime)
