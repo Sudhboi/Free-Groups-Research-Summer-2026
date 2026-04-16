@@ -17,9 +17,14 @@
             ps: with ps; [
               graph-tool
               jupyter
+              jupyterlab-vim
+              jupyterlab-lsp
+              python-lsp-server
             ]
           ))
           python3
+          basedpyright
+          cairo
         ];
       };
     };
