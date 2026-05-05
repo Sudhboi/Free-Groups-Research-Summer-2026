@@ -35,3 +35,7 @@ inv = foldl invert []
 
 elemWord :: Elem -> GroupWord
 elemWord elem = [elem]
+
+pretty :: GroupWord -> String
+pretty (ele:rest) = show ele ++ pretty rest
+pretty [] = ""

@@ -1,10 +1,10 @@
 from objects import *
 
-rank = 3
+rank = 4
 grp = getFreeGroup(rank)
 whiteheadList = getWhiteheadFromCache(rank)
 
-k = [(word("a^3 b"), 4)]
+k = [(word("a b c^2 d a"), 4)]
 
 for rword, length in k:
     print("Given:", rword, length)

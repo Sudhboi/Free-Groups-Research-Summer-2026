@@ -28,11 +28,18 @@ class FreeGroup:
             word_list.extend(next_words)
         return word_list
 
+    def get_hash_dict(self) -> dict[int, Elem]:
+        hash_dict : dict[int, Elem] = dict()
+        for elem in self.alphabet:
+            hash_dict[hash(elem)] = elem
+        return hash_dict
+
 def getFreeGroup(rank : int) -> FreeGroup:
     basisList: list[str] = []
     for i in range(97, 97 + rank):
         basisList.append(chr(i))
     return FreeGroup(tuple(basisList))
+
 
 def genRandWord(group : FreeGroup, length : int, variation : int) -> tuple[Word, int]:
     newWord = MutableWord([])

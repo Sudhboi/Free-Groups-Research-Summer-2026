@@ -1,4 +1,4 @@
-from objects.FreeGroup import *
+from .FreeGroup import *
 from graph_tool.all import Graph, graph_draw
 
 def sgn(x : int) -> int:
