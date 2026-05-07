@@ -36,6 +36,9 @@ class Elem:
 
     def inv(self) -> Elem:
         return Elem(self.sym, -self.exp)
+    
+    def isNegative(self) -> bool:
+        return self.exp < 0
 
 def elem(raw: str) -> Elem:
     splits = raw.split("^") 

@@ -19,6 +19,7 @@
               jupyter
               jupyterlab-vim
               jupyterlab-lsp
+              numpy
               python-lsp-server
             ]
           ))
