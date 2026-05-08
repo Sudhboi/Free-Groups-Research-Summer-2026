@@ -89,7 +89,7 @@ def make_directed(whg : gt.Graph) -> gt.Graph:
     d_whg.ep["weight"] = new_weight
     return d_whg
 
-def find_partitions(g : gt.Graph) -> list[tuple[set[Elem], set[Elem]]]:
+def find_partitions(g : gt.Graph, draw_graph : bool = False) -> list[tuple[set[Elem], set[Elem]]]:
     dg = make_directed(g)
     cap = dg.ep["weight"]
     elem = dg.vp["elem"]
@@ -105,7 +105,8 @@ def find_partitions(g : gt.Graph) -> list[tuple[set[Elem], set[Elem]]]:
         # print(elem[src], "Degree:", src.out_degree(cap), "MinCut:", mc)
         # print(temp)
         if mc < src.out_degree(cap):
-            draw_whitehead_graph(dg, part=part)
+            if draw_graph: 
+                draw_whitehead_graph(dg, part=part)
             part1 = set()
             part2 = set()
             for v in dg.vertices():

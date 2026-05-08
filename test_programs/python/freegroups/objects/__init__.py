@@ -6,3 +6,4 @@ from .WhiteheadAutomorphism import *
 from .Cache import *
 from .WhiteheadGraph import *
 from .GraphFunctions import *
+from .Minimizer import *
