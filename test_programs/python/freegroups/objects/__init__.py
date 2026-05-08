@@ -5,3 +5,4 @@ from .Morphism import *
 from .WhiteheadAutomorphism import *
 from .Cache import *
 from .WhiteheadGraph import *
+from .GraphFunctions import *

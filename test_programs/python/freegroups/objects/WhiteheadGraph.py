@@ -1,4 +1,4 @@
-import graph_tool as gt 
+import graph_tool.all as gt 
 from graph_tool.draw import radial_tree_layout, graph_draw
 from .Element import Elem
 from .Word import Word
@@ -16,20 +16,22 @@ def make_whitehead_graph(word : Word) -> gt.Graph:
     ug.add_edge_list(edge_list, eprops=[weight])
 
     elements = ug.new_vertex_property("object")
+    inv_vertex = ug.new_vertex_property("int")
     for v in ug.vertices():
         elements[v] = lookup_inv[int(v)]
+        inv_vertex[v] = lookup[elements[v].inv()]
     ug.vp["elem"] = elements
+    ug.vp["inv_vertex"] = inv_vertex
 
     return ug
 
-def draw_whitehead_graph(wh_graph : gt.Graph, output = None) -> None:
+def draw_whitehead_graph(wh_graph : gt.Graph, output = None, part=None) -> None:
     weight = wh_graph.edge_properties["weight"]
     elem = wh_graph.vertex_properties["elem"]
     v_text = wh_graph.new_vertex_property("string")
     for v in wh_graph.vertices():
         v_text[v] = str(elem[v])
-    print(elem)
-    graph_draw(wh_graph, edge_text=weight, vertex_text=v_text, output=output)
+    graph_draw(wh_graph, edge_text=weight, vertex_text=v_text, output=output, vertex_fill_color=part)
 
 def sgn(a : int) -> int:
     assert (a != 0)
@@ -50,10 +52,10 @@ def get_edge_list(word: Word) -> tuple[dict[Elem, int], list[tuple[int, int, int
         for elem in [curr_simp, curr_simp.inv(), next_simp.inv()]:
             if elem not in lookup:
                 lookup[elem] = len(lookup)
-        if curr.exp - 1 > 0:
+        if abs(curr.exp) - 1 != 0:
             edge_list.append((lookup[curr_simp], 
                               lookup[curr_simp.inv()], 
-                              curr.exp - 1))
+                              abs(curr.exp) - 1))
         edge_list.append((lookup[curr_simp], lookup[next_simp.inv()], 1))
     return (lookup, clean_edge_list(edge_list))
 
@@ -72,3 +74,48 @@ def clean_edge_list(edge_list : list[tuple[int, int, int]]) -> list[tuple[int, i
     for pair in cache:
         new_list.append((pair[0], pair[1], cache[pair]))
     return new_list
+
+def make_directed(whg : gt.Graph) -> gt.Graph:
+    d_whg = gt.Graph(whg)
+    d_whg.set_directed(True)
+    d_whg.clear_edges()
+    weight = whg.ep["weight"]
+    rev_edge_list = []
+    new_weight = d_whg.new_ep("int")
+    for e in whg.iter_edges(eprops=[weight]):
+        rev_edge_list.append((e[0], e[1], e[2]))
+        rev_edge_list.append((e[1], e[0], e[2]))
+    d_whg.add_edge_list(rev_edge_list, eprops = [new_weight])
+    d_whg.ep["weight"] = new_weight
+    return d_whg
+
+def find_partitions(g : gt.Graph) -> list[tuple[set[Elem], set[Elem]]]:
+    dg = make_directed(g)
+    cap = dg.ep["weight"]
+    elem = dg.vp["elem"]
+    inv = dg.vp["inv_vertex"]
+    partitions : list[tuple[set[Elem], set[Elem]]] = []
+    for src in dg.vertices():
+        tgt = dg.vertex(inv[src])
+        cap = dg.ep["weight"]
+        res = gt.boykov_kolmogorov_max_flow(dg, src, tgt, cap)
+        part = gt.min_st_cut(dg, src, cap, res)
+        temp = [cap[e] for e in dg.edges() if part[e.source()] != part[e.target()]]
+        mc = sum(temp)//2
+        # print(elem[src], "Degree:", src.out_degree(cap), "MinCut:", mc)
+        # print(temp)
+        if mc < src.out_degree(cap):
+            draw_whitehead_graph(dg, part=part)
+            part1 = set()
+            part2 = set()
+            for v in dg.vertices():
+                (part1 if part[v] else part2).add(elem[v])
+            partitions.append((part1, part2))
+    return clean_partitions(partitions)
+
+def clean_partitions(partlist : list[tuple[set[Elem], set[Elem]]]) -> list[tuple[set[Elem], set[Elem]]]:
+    non_duplicate : list[tuple[set[Elem], set[Elem]]] = []
+    for parts in partlist:
+        if not (parts in non_duplicate or parts[::-1] in non_duplicate):
+            non_duplicate.append(parts)
+    return non_duplicate

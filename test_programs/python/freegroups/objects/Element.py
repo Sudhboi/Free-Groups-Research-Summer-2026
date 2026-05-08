@@ -34,6 +34,9 @@ class Elem:
     def __hash__(self) -> int:
         return hash((self.sym, self.exp))
 
+    def get_copyable(self) -> str:
+        return "{}^{}".format(self.sym, self.exp)
+
     def inv(self) -> Elem:
         return Elem(self.sym, -self.exp)
     

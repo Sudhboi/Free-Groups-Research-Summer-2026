@@ -17,7 +17,7 @@ Piecewise definition taken from Virnig, 1998.
 from .Morphism import *
 from .Powerset import powerset
 
-def generateType2WAMaps(group : FreeGroup) -> list[dict[Symbol, Word]]:
+def generateAllType2WAMaps(group : FreeGroup) -> list[dict[Symbol, Word]]:
     morphList : list[dict[Symbol, Word]] = []
     L = group.alphabet
     for A in powerset(L):
@@ -37,5 +37,15 @@ def generateType2WAMaps(group : FreeGroup) -> list[dict[Symbol, Word]]:
                 morphList.append(phiMap)
     return morphList
 
-
-
+def generate_wh_automorphism(x : Elem, A : set[Elem], group : FreeGroup) -> Morphism:
+    phiMap: dict[Symbol, Word] = {}
+    if x.inv() not in A:
+        for ysym in group.basis:
+            y = Elem(ysym, 1)
+            if y in A and y.inv() not in A and y not in [x, x.inv()]:
+                phiMap[ysym] = Word((y, x))
+            elif y.inv() in A and y not in A and y not in [x, x.inv()]:
+                phiMap[ysym] = Word((x.inv(), y))
+            elif y in A and y.inv() in A:
+                phiMap[ysym] = Word((x.inv(), y, x))
+    return Morphism(group, phiMap)

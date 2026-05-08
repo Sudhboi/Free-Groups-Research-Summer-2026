@@ -104,5 +104,8 @@ class Word:
     def __len__(self) -> int:
         return self.length
 
+    def get_copyable(self) -> str:
+        return " ".join([elem.get_copyable() for elem in self.word])
+
 def word(raw : str) -> Word:
     return Word(tuple([elem(i) for i in raw.split(" ")]))
